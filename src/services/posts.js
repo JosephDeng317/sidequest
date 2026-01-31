@@ -6,23 +6,31 @@ import {
   onSnapshot,
   serverTimestamp,
 } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage, auth } from '../config/firebase';
+import * as ImageManipulator from 'expo-image-manipulator';
+import { db, auth } from '../config/firebase';
 
 const POSTS_COLLECTION = 'posts';
+
+// Firestore document limit is 1MB. Resize + compress so base64 stays well under that.
+const MAX_PHOTO_WIDTH = 800;
+const JPEG_QUALITY = 0.6;
 
 export async function createPost({ title, caption, imageUri }) {
   const uid = auth.currentUser?.uid;
   if (!uid) throw new Error('Not authenticated');
 
-  let photoUrl = null;
+  let photoBase64 = null;
   if (imageUri) {
-    const filename = `posts/${uid}/${Date.now()}.jpg`;
-    const storageRef = ref(storage, filename);
-    const response = await fetch(imageUri);
-    const blob = await response.blob();
-    await uploadBytes(storageRef, blob);
-    photoUrl = await getDownloadURL(storageRef);
+    const result = await ImageManipulator.manipulateAsync(
+      imageUri,
+      [{ resize: { width: MAX_PHOTO_WIDTH } }],
+      {
+        compress: JPEG_QUALITY,
+        format: ImageManipulator.SaveFormat.JPEG,
+        base64: true,
+      }
+    );
+    photoBase64 = result.base64 ?? null;
   }
 
   const docRef = await addDoc(collection(db, POSTS_COLLECTION), {
@@ -30,7 +38,7 @@ export async function createPost({ title, caption, imageUri }) {
     userEmail: auth.currentUser?.email ?? '',
     title: title.trim(),
     caption: caption.trim(),
-    photoUrl,
+    photoBase64: photoBase64,
     createdAt: serverTimestamp(),
   });
   return docRef.id;

@@ -12,10 +12,13 @@ import { useAuth } from '../context/AuthContext';
 import { subscribeToPosts } from '../services/posts';
 
 function PostCard({ item }) {
+  const photoUri = item.photoBase64
+    ? `data:image/jpeg;base64,${item.photoBase64}`
+    : null;
   return (
     <View style={styles.card}>
-      {item.photoUrl ? (
-        <Image source={{ uri: item.photoUrl }} style={styles.cardImage} resizeMode="cover" />
+      {photoUri ? (
+        <Image source={{ uri: photoUri }} style={styles.cardImage} resizeMode="cover" />
       ) : null}
       <View style={styles.cardContent}>
         <Text style={styles.cardTitle}>{item.title}</Text>
