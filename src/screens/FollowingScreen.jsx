@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { subscribeToPosts } from '../services/posts';
+import { subscribeToFollowingIds } from '../services/follows';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -52,9 +53,10 @@ function PostCard({ item, onPostPress, onAuthorPress }) {
   );
 }
 
-export default function HomeScreen({ navigation }) {
-  const { user, logout } = useAuth();
+export default function FollowingScreen({ navigation }) {
+  const { user } = useAuth();
   const [posts, setPosts] = useState([]);
+  const [followingIds, setFollowingIds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPost, setSelectedPost] = useState(null);
 
@@ -66,21 +68,23 @@ export default function HomeScreen({ navigation }) {
     return unsubscribe;
   }, []);
 
+  useEffect(() => {
+    if (!user?.uid) return;
+    return subscribeToFollowingIds(user.uid, setFollowingIds);
+  }, [user?.uid]);
+
+  const followingIdsSet = useMemo(() => new Set(followingIds), [followingIds]);
+  const followingPosts = useMemo(
+    () => posts.filter((p) => p.userId && followingIdsSet.has(p.userId)),
+    [posts, followingIdsSet]
+  );
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.welcome}>Hey, {user?.email?.split('@')[0] ?? 'explorer'}</Text>
-        <TouchableOpacity onPress={logout} style={styles.logoutBtn}>
-          <Text style={styles.logoutText}>Log out</Text>
-        </TouchableOpacity>
+        <Text style={styles.title}>Following</Text>
+        <Text style={styles.subtitle}>Posts from people you follow</Text>
       </View>
-
-      <TouchableOpacity
-        style={styles.createButton}
-        onPress={() => navigation.navigate('CreatePost')}
-      >
-        <Text style={styles.createButtonText}>+ New sidequest</Text>
-      </TouchableOpacity>
 
       {loading ? (
         <View style={styles.loading}>
@@ -88,7 +92,7 @@ export default function HomeScreen({ navigation }) {
         </View>
       ) : (
         <FlatList
-          data={posts}
+          data={followingPosts}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <PostCard
@@ -104,7 +108,9 @@ export default function HomeScreen({ navigation }) {
           )}
           contentContainerStyle={styles.list}
           ListEmptyComponent={
-            <Text style={styles.empty}>No posts yet. Create your first sidequest!</Text>
+            <Text style={styles.empty}>
+              Follow people from the Feed to see their posts here.
+            </Text>
           }
         />
       )}
@@ -177,37 +183,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#0f0f1a',
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 16,
+    paddingTop: 8,
     backgroundColor: '#1a1a2e',
     borderBottomWidth: 1,
     borderBottomColor: '#16213e',
   },
-  welcome: {
-    fontSize: 16,
-    color: '#9ca3af',
+  title: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#eaeaea',
+    marginBottom: 4,
   },
-  logoutBtn: {
-    padding: 8,
-  },
-  logoutText: {
-    color: '#e94560',
+  subtitle: {
     fontSize: 14,
-  },
-  createButton: {
-    margin: 16,
-    padding: 16,
-    backgroundColor: '#e94560',
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  createButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
+    color: '#9ca3af',
   },
   list: {
     padding: 16,
