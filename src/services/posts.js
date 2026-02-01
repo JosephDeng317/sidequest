@@ -40,6 +40,8 @@ export async function createPost({ title, caption, imageUri }) {
     caption: caption.trim(),
     photoBase64: photoBase64,
     createdAt: serverTimestamp(),
+    likeCount: 0,
+    commentCount: 0,
   });
   return docRef.id;
 }
