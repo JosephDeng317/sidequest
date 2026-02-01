@@ -20,6 +20,7 @@ import {
 } from '../services/follows';
 import PostCard from '../components/PostCard';
 import PostDetailModal from '../components/PostDetailModal';
+import StatCard from '../components/StatCard';
 
 export default function ProfileScreen({ navigation }) {
   const route = useRoute();
@@ -129,15 +130,6 @@ export default function ProfileScreen({ navigation }) {
         )}
       </View>
 
-      {isOwnProfile && (
-        <TouchableOpacity
-          style={styles.createButton}
-          onPress={() => navigation.navigate('SidequestOptions')}
-        >
-          <Text style={styles.createButtonText}>+ New sidequest</Text>
-        </TouchableOpacity>
-      )}
-
       {loading ? (
         <View style={styles.loading}>
           <ActivityIndicator size="large" color="#e94560" />
@@ -154,6 +146,19 @@ export default function ProfileScreen({ navigation }) {
             />
           )}
           contentContainerStyle={styles.list}
+          ListHeaderComponent={
+            <>
+              <StatCard userId={viewingUserId} />
+              {isOwnProfile && (
+                <TouchableOpacity
+                  style={styles.createButton}
+                  onPress={() => navigation.navigate('SidequestOptions')}
+                >
+                  <Text style={styles.createButtonText}>+ New sidequest</Text>
+                </TouchableOpacity>
+              )}
+            </>
+          }
           ListEmptyComponent={
             <Text style={styles.empty}>
               {isOwnProfile

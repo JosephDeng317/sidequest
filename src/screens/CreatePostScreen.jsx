@@ -16,6 +16,7 @@ import {
 import { useRoute } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { createPost } from '../services/posts';
+import { updateStatsOnQuestComplete } from '../services/userStats';
 
 const isWeb = Platform.OS === 'web';
 
@@ -38,6 +39,8 @@ export default function CreatePostScreen({ navigation }) {
   const route = useRoute();
   const questTitle = route.params?.questTitle ?? '';
   const questDescription = route.params?.questDescription ?? '';
+  const questCategory = route.params?.questCategory ?? '';
+  const questDifficulty = route.params?.questDifficulty ?? 2;
 
   const [title, setTitle] = useState('');
   const [caption, setCaption] = useState('');
@@ -108,7 +111,16 @@ export default function CreatePostScreen({ navigation }) {
         title: trimmedTitle,
         caption: caption.trim(),
         imageUri: imageUri || null,
+        questCategory: questCategory || null,
+        questDifficulty: questDifficulty,
       });
+      if (questCategory) {
+        try {
+          await updateStatsOnQuestComplete({ category: questCategory, difficulty: questDifficulty });
+        } catch (statsErr) {
+          // Don't block navigation if stats update fails
+        }
+      }
       navigation.goBack();
     } catch (err) {
       showError('Error', err.message || 'Could not create post.');

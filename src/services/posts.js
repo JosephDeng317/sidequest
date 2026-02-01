@@ -15,7 +15,7 @@ const POSTS_COLLECTION = 'posts';
 const MAX_PHOTO_WIDTH = 800;
 const JPEG_QUALITY = 0.6;
 
-export async function createPost({ title, caption, imageUri }) {
+export async function createPost({ title, caption, imageUri, questCategory, questDifficulty }) {
   const uid = auth.currentUser?.uid;
   if (!uid) throw new Error('Not authenticated');
 
@@ -33,7 +33,7 @@ export async function createPost({ title, caption, imageUri }) {
     photoBase64 = result.base64 ?? null;
   }
 
-  const docRef = await addDoc(collection(db, POSTS_COLLECTION), {
+  const postData = {
     userId: uid,
     userEmail: auth.currentUser?.email ?? '',
     title: title.trim(),
@@ -42,7 +42,12 @@ export async function createPost({ title, caption, imageUri }) {
     createdAt: serverTimestamp(),
     likeCount: 0,
     commentCount: 0,
-  });
+  };
+
+  if (questCategory) postData.questCategory = questCategory;
+  if (questDifficulty != null) postData.questDifficulty = questDifficulty;
+
+  const docRef = await addDoc(collection(db, POSTS_COLLECTION), postData);
   return docRef.id;
 }
 
