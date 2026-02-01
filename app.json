@@ -19,7 +19,8 @@
       "bundleIdentifier": "com.sidequest.app",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Sidequest needs access to your photos to add images to posts.",
-        "NSCameraUsageDescription": "Sidequest needs camera access to take photos for posts."
+        "NSCameraUsageDescription": "Sidequest needs camera access to take photos for posts.",
+        "NSLocationWhenInUseUsageDescription": "Sidequest uses your location to suggest nearby places for AI-generated sidequests."
       }
     },
     "android": {
@@ -30,7 +31,8 @@
       "package": "com.sidequest.app",
       "permissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
-        "android.permission.CAMERA"
+        "android.permission.CAMERA",
+        "android.permission.ACCESS_FINE_LOCATION"
       ]
     },
     "plugins": [
@@ -39,6 +41,12 @@
         {
           "photosPermission": "Allow Sidequest to access your photos for posts.",
           "cameraPermission": "Allow Sidequest to use your camera for posts."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Sidequest uses your location to suggest nearby places for AI-generated sidequests."
         }
       ],
       "expo-asset"

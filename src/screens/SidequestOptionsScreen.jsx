@@ -5,9 +5,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import sidequestsData from '../data/sidequests.json';
+import { generateSidequestFromLocation } from '../services/aiSidequest';
 
 const CATEGORIES = ['fun', 'fitness', 'social'];
 const MIN_MINUTES = 15;
@@ -34,6 +37,7 @@ export default function SidequestOptionsScreen({ navigation }) {
   const [category, setCategory] = useState('fun');
   const [timeMinutes, setTimeMinutes] = useState(30);
   const [assignedQuest, setAssignedQuest] = useState(null);
+  const [aiLoading, setAiLoading] = useState(false);
 
   const sidequests = useMemo(
     () => sidequestsData?.sidequests ?? [],
@@ -58,6 +62,19 @@ export default function SidequestOptionsScreen({ navigation }) {
         questTitle: assignedQuest.title,
         questDescription: assignedQuest.description,
       });
+    }
+  };
+
+  const handleGenerateAI = async () => {
+    setAiLoading(true);
+    setAssignedQuest(null);
+    try {
+      const quest = await generateSidequestFromLocation(category, timeMinutes);
+      setAssignedQuest(quest);
+    } catch (err) {
+      Alert.alert('AI sidequest failed', err.message || 'Something went wrong. Try again.');
+    } finally {
+      setAiLoading(false);
     }
   };
 
@@ -110,15 +127,32 @@ export default function SidequestOptionsScreen({ navigation }) {
       </View>
 
       {!assignedQuest ? (
-        <TouchableOpacity style={styles.getQuestBtn} onPress={handleGetQuest}>
-          <Text style={styles.getQuestBtnText}>Get my sidequest</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonRow}>
+          <TouchableOpacity
+            style={[styles.getQuestBtn, aiLoading && styles.buttonDisabled]}
+            onPress={handleGetQuest}
+            disabled={aiLoading}
+          >
+            <Text style={styles.getQuestBtnText}>Get my sidequest</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.aiQuestBtn, aiLoading && styles.buttonDisabled]}
+            onPress={handleGenerateAI}
+            disabled={aiLoading}
+          >
+            {aiLoading ? (
+              <ActivityIndicator color="#1a1a2e" size="small" />
+            ) : (
+              <Text style={styles.aiQuestBtnText}>Generate AI sidequest</Text>
+            )}
+          </TouchableOpacity>
+        </View>
       ) : (
         <View style={styles.questCard}>
           <Text style={styles.questTitle}>{assignedQuest.title}</Text>
           <Text style={styles.questDescription}>{assignedQuest.description}</Text>
           <Text style={styles.questDuration}>
-            ~{assignedQuest.durationMinutes} min
+            ~{assignedQuest.durationMinutes ?? timeMinutes} min
           </Text>
           <TouchableOpacity
             style={styles.finishBtn}
@@ -200,6 +234,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#6b7280',
   },
+  buttonRow: {
+    gap: 12,
+  },
   getQuestBtn: {
     backgroundColor: '#e94560',
     borderRadius: 12,
@@ -210,6 +247,22 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: '700',
+  },
+  aiQuestBtn: {
+    backgroundColor: '#16213e',
+    borderRadius: 12,
+    padding: 18,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#e94560',
+  },
+  aiQuestBtnText: {
+    color: '#e94560',
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
   questCard: {
     backgroundColor: '#1a1a2e',
