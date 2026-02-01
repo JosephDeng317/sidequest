@@ -15,14 +15,18 @@ const POSTS_COLLECTION = 'posts';
 const MAX_PHOTO_WIDTH = 800;
 const JPEG_QUALITY = 0.6;
 
-export async function createPost({ title, caption, imageUri }) {
+export async function createPost({ title, caption, imageUri, imageUris }) {
   const uid = auth.currentUser?.uid;
   if (!uid) throw new Error('Not authenticated');
 
-  let photoBase64 = null;
-  if (imageUri) {
+  const uris = Array.isArray(imageUris) && imageUris.length > 0
+    ? imageUris
+    : imageUri ? [imageUri] : [];
+
+  const photoBase64s = [];
+  for (const uri of uris) {
     const result = await ImageManipulator.manipulateAsync(
-      imageUri,
+      uri,
       [{ resize: { width: MAX_PHOTO_WIDTH } }],
       {
         compress: JPEG_QUALITY,
@@ -30,7 +34,7 @@ export async function createPost({ title, caption, imageUri }) {
         base64: true,
       }
     );
-    photoBase64 = result.base64 ?? null;
+    if (result.base64) photoBase64s.push(result.base64);
   }
 
   const docRef = await addDoc(collection(db, POSTS_COLLECTION), {
@@ -38,7 +42,7 @@ export async function createPost({ title, caption, imageUri }) {
     userEmail: auth.currentUser?.email ?? '',
     title: title.trim(),
     caption: caption.trim(),
-    photoBase64: photoBase64,
+    photoBase64s: photoBase64s.length > 0 ? photoBase64s : null,
     createdAt: serverTimestamp(),
     likeCount: 0,
     commentCount: 0,

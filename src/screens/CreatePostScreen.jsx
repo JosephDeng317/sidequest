@@ -38,15 +38,19 @@ export default function CreatePostScreen({ navigation }) {
   const route = useRoute();
   const questTitle = route.params?.questTitle ?? '';
   const questDescription = route.params?.questDescription ?? '';
+  const questPhotos = route.params?.questPhotos ?? [];
 
   const [title, setTitle] = useState('');
   const [caption, setCaption] = useState('');
+  const [imageUris, setImageUris] = useState([]);
 
   useEffect(() => {
     if (questTitle) setTitle(questTitle);
     if (questDescription) setCaption(questDescription);
-  }, [questTitle, questDescription]);
-  const [imageUri, setImageUri] = useState(null);
+    if (Array.isArray(questPhotos) && questPhotos.length > 0) {
+      setImageUris([...questPhotos]);
+    }
+  }, [questTitle, questDescription, questPhotos]);
   const [loading, setLoading] = useState(false);
   const [showImageSourceModal, setShowImageSourceModal] = useState(false);
 
@@ -58,38 +62,42 @@ export default function CreatePostScreen({ navigation }) {
     }
   };
 
-  const takePhoto = async () => {
-    setShowImageSourceModal(false);
-    try {
-      const { status } = await ImagePicker.requestCameraPermissionsAsync();
-      if (status !== 'granted') {
-        showError('Permission needed', 'Allow access to your camera to take a photo.');
-        return;
-      }
-      const result = await ImagePicker.launchCameraAsync(cameraOptions);
-      if (!result.canceled) {
-        setImageUri(result.assets[0].uri);
-      }
-    } catch (err) {
-      showError('Camera error', err.message || 'Could not open camera. Try choosing from library instead.');
-    }
-  };
+  // const takePhoto = async () => {
+  //   setShowImageSourceModal(false);
+  //   try {
+  //     const { status } = await ImagePicker.requestCameraPermissionsAsync();
+  //     if (status !== 'granted') {
+  //       showError('Permission needed', 'Allow access to your camera to take a photo.');
+  //       return;
+  //     }
+  //     const result = await ImagePicker.launchCameraAsync(cameraOptions);
+  //     if (!result.canceled) {
+  //       setImageUris((prev) => [...prev, result.assets[0].uri]);
+  //     }
+  //   } catch (err) {
+  //     showError('Camera error', err.message || 'Could not open camera. Try choosing from library instead.');
+  //   }
+  // };
 
-  const pickFromLibrary = async () => {
-    setShowImageSourceModal(false);
-    try {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        showError('Permission needed', 'Allow access to your photos to add an image.');
-        return;
-      }
-      const result = await ImagePicker.launchImageLibraryAsync(libraryOptions);
-      if (!result.canceled) {
-        setImageUri(result.assets[0].uri);
-      }
-    } catch (err) {
-      showError('Error', err.message || 'Could not open photo library.');
-    }
+  // const pickFromLibrary = async () => {
+  //   setShowImageSourceModal(false);
+  //   try {
+  //     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  //     if (status !== 'granted') {
+  //       showError('Permission needed', 'Allow access to your photos to add an image.');
+  //       return;
+  //     }
+  //     const result = await ImagePicker.launchImageLibraryAsync(libraryOptions);
+  //     if (!result.canceled) {
+  //       setImageUris((prev) => [...prev, result.assets[0].uri]);
+  //     }
+  //   } catch (err) {
+  //     showError('Error', err.message || 'Could not open photo library.');
+  //   }
+  // };
+
+  const removePhoto = (index) => {
+    setImageUris((prev) => prev.filter((_, i) => i !== index));
   };
 
   const showImageOptions = () => {
@@ -107,7 +115,7 @@ export default function CreatePostScreen({ navigation }) {
       await createPost({
         title: trimmedTitle,
         caption: caption.trim(),
-        imageUri: imageUri || null,
+        imageUris: imageUris.length > 0 ? imageUris : null,
       });
       navigation.goBack();
     } catch (err) {
@@ -137,19 +145,25 @@ export default function CreatePostScreen({ navigation }) {
         numberOfLines={4}
       />
 
-      <TouchableOpacity style={styles.imageButton} onPress={showImageOptions}>
-        {imageUri ? (
-          <Image source={{ uri: imageUri }} style={styles.preview} resizeMode="cover" />
-        ) : (
-          <View style={styles.placeholder}>
-            <Text style={styles.placeholderText}>Tap to add a photo</Text>
-          </View>
-        )}
-      </TouchableOpacity>
-      {imageUri ? (
-        <TouchableOpacity onPress={() => setImageUri(null)}>
-          <Text style={styles.removePhoto}>Remove photo</Text>
-        </TouchableOpacity>
+      <Text style={styles.photosLabel}>Photos</Text>
+      {/* <TouchableOpacity style={styles.imageButton} onPress={showImageOptions}>
+        <View style={styles.placeholder}>
+          <Text style={styles.placeholderText}>
+            {imageUris.length > 0 ? 'Add another photo' : 'Tap to add a photo'}
+          </Text>
+        </View>
+      </TouchableOpacity> */}
+      {imageUris.length > 0 ? (
+        <View style={styles.photoList}>
+          {imageUris.map((uri, index) => (
+            <View key={index} style={styles.photoRow}>
+              <Image source={{ uri }} style={styles.previewThumb} resizeMode="cover" />
+              <TouchableOpacity onPress={() => removePhoto(index)} style={styles.removePhotoBtn}>
+                <Text style={styles.removePhoto}>Remove</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
       ) : null}
 
       <Modal
@@ -163,14 +177,14 @@ export default function CreatePostScreen({ navigation }) {
           onPress={() => setShowImageSourceModal(false)}
         >
           <Pressable style={styles.imageSourceModal} onPress={(e) => e.stopPropagation()}>
-            <Text style={styles.imageSourceTitle}>Add photo</Text>
+            {/* <Text style={styles.imageSourceTitle}>Add photo</Text>
             <Text style={styles.imageSourceSubtitle}>Choose how to add a photo</Text>
             <TouchableOpacity style={styles.imageSourceBtn} onPress={takePhoto}>
               <Text style={styles.imageSourceBtnText}>Take photo</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.imageSourceBtn} onPress={pickFromLibrary}>
               <Text style={styles.imageSourceBtnText}>Choose from library</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               style={[styles.imageSourceBtn, styles.imageSourceBtnCancel]}
               onPress={() => setShowImageSourceModal(false)}
@@ -216,6 +230,12 @@ const styles = StyleSheet.create({
     minHeight: 100,
     textAlignVertical: 'top',
   },
+  photosLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#9ca3af',
+    marginBottom: 8,
+  },
   imageButton: {
     marginBottom: 8,
     borderRadius: 12,
@@ -240,10 +260,29 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 12,
   },
+  photoList: {
+    marginTop: 12,
+    marginBottom: 24,
+  },
+  photoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+    gap: 12,
+  },
+  previewThumb: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
+  },
+  removePhotoBtn: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
   removePhoto: {
     color: '#e94560',
     fontSize: 14,
-    marginBottom: 24,
+    fontWeight: '600',
   },
   button: {
     backgroundColor: '#e94560',

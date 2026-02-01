@@ -56,11 +56,12 @@ export default function SidequestOptionsScreen({ navigation }) {
     }
   };
 
-  const handleFinishQuest = () => {
+  const handleStartQuest = () => {
     if (assignedQuest) {
-      navigation.replace('CreatePost', {
+      navigation.navigate('DoSidequest', {
         questTitle: assignedQuest.title,
         questDescription: assignedQuest.description,
+        durationMinutes: assignedQuest.durationMinutes ?? timeMinutes,
       });
     }
   };
@@ -156,9 +157,9 @@ export default function SidequestOptionsScreen({ navigation }) {
           </Text>
           <TouchableOpacity
             style={styles.finishBtn}
-            onPress={handleFinishQuest}
+            onPress={handleStartQuest}
           >
-            <Text style={styles.finishBtnText}>Finish quest</Text>
+            <Text style={styles.finishBtnText}>Start sidequest</Text>
           </TouchableOpacity>
         </View>
       )}

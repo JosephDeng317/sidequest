@@ -4,8 +4,13 @@ import { likePost, unlikePost, subscribeToIsLiked } from '../services/likes';
 
 export default function PostCard({ item, onPostPress, onAuthorPress, showAuthorLink = true }) {
   const [isLiked, setIsLiked] = useState(false);
-  const photoUri = item.photoBase64
-    ? `data:image/jpeg;base64,${item.photoBase64}`
+  const photos = item.photoBase64s?.length > 0
+    ? item.photoBase64s
+    : item.photoBase64
+      ? [item.photoBase64]
+      : [];
+  const photoUri = photos.length > 0
+    ? `data:image/jpeg;base64,${photos[0]}`
     : null;
   const likeCount = item.likeCount ?? 0;
   const commentCount = item.commentCount ?? 0;
