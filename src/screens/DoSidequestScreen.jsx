@@ -25,6 +25,8 @@ export default function DoSidequestScreen({ navigation }) {
   const questTitle = route.params?.questTitle ?? '';
   const questDescription = route.params?.questDescription ?? '';
   const durationMinutes = route.params?.durationMinutes ?? 30;
+  const questCategory = route.params?.questCategory ?? 'fun';
+  const questDifficulty = route.params?.questDifficulty ?? 2;
 
   const [photos, setPhotos] = useState([]);
 
@@ -53,6 +55,8 @@ export default function DoSidequestScreen({ navigation }) {
       questTitle,
       questDescription,
       questPhotos: photos,
+      questCategory,
+      questDifficulty,
     });
   };
 
