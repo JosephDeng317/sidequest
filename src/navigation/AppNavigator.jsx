@@ -8,6 +8,7 @@ import SignupScreen from '../screens/SignupScreen';
 import HomeScreen from '../screens/HomeScreen';
 import FollowingScreen from '../screens/FollowingScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import SidequestOptionsScreen from '../screens/SidequestOptionsScreen';
 import CreatePostScreen from '../screens/CreatePostScreen';
 
 const Stack = createNativeStackNavigator();
@@ -69,6 +70,17 @@ function MainStack() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name="SidequestOptions"
+        component={SidequestOptionsScreen}
+        options={{
+          headerShown: true,
+          headerStyle: { backgroundColor: '#1a1a2e' },
+          headerTintColor: '#eaeaea',
+          headerTitleStyle: { fontWeight: '600' },
+          title: 'New Sidequest',
+        }}
+      />
+      <Stack.Screen
         name="CreatePost"
         component={CreatePostScreen}
         options={{
@@ -77,7 +89,7 @@ function MainStack() {
           headerStyle: { backgroundColor: '#1a1a2e' },
           headerTintColor: '#eaeaea',
           headerTitleStyle: { fontWeight: '600' },
-          title: 'New Post',
+          title: 'Share your sidequest',
         }}
       />
     </Stack.Navigator>

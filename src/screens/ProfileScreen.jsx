@@ -163,7 +163,7 @@ export default function ProfileScreen({ navigation }) {
       {isOwnProfile && (
         <TouchableOpacity
           style={styles.createButton}
-          onPress={() => navigation.navigate('CreatePost')}
+          onPress={() => navigation.navigate('SidequestOptions')}
         >
           <Text style={styles.createButtonText}>+ New sidequest</Text>
         </TouchableOpacity>

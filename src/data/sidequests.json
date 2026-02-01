@@ -1,0 +1,172 @@
+{
+  "sidequests": [
+    {
+      "id": "1",
+      "title": "Take a 20-minute walk",
+      "description": "Go for a brisk walk around your neighborhood. Notice something new you've never seen before.",
+      "category": "fitness",
+      "durationMinutes": 20
+    },
+    {
+      "id": "2",
+      "title": "15-minute stretch session",
+      "description": "Do a full body stretch routine. Focus on areas that feel tense.",
+      "category": "fitness",
+      "durationMinutes": 15
+    },
+    {
+      "id": "3",
+      "title": "30-minute jog or run",
+      "description": "Head outside for a run. Go at your own pace—it's about moving, not speed.",
+      "category": "fitness",
+      "durationMinutes": 30
+    },
+    {
+      "id": "4",
+      "title": "45-minute bike ride",
+      "description": "Hop on a bike and explore a new route. Discover a street or path you've never taken.",
+      "category": "fitness",
+      "durationMinutes": 45
+    },
+    {
+      "id": "5",
+      "title": "1-hour yoga flow",
+      "description": "Follow a yoga video or create your own flow. Breathe and move intentionally.",
+      "category": "fitness",
+      "durationMinutes": 60
+    },
+    {
+      "id": "6",
+      "title": "90-minute hike",
+      "description": "Find a trail and hike for about an hour and a half. Take in the scenery.",
+      "category": "fitness",
+      "durationMinutes": 90
+    },
+    {
+      "id": "7",
+      "title": "2-hour outdoor adventure",
+      "description": "Plan a longer activity—hiking, biking, or a mix. Explore somewhere new.",
+      "category": "fitness",
+      "durationMinutes": 120
+    },
+    {
+      "id": "8",
+      "title": "10 jumping jacks every hour",
+      "description": "Set a reminder. Every hour, do 10 jumping jacks. Stay active throughout your day.",
+      "category": "fitness",
+      "durationMinutes": 15
+    },
+    {
+      "id": "9",
+      "title": "Watch a comedy special",
+      "description": "Find a 20-30 minute comedy clip or special. Laugh out loud.",
+      "category": "fun",
+      "durationMinutes": 25
+    },
+    {
+      "id": "10",
+      "title": "Learn a magic trick",
+      "description": "Search YouTube for a simple magic trick. Master it and show someone.",
+      "category": "fun",
+      "durationMinutes": 20
+    },
+    {
+      "id": "11",
+      "title": "Dance party for one",
+      "description": "Put on your favorite playlist and dance like nobody's watching for 15 minutes.",
+      "category": "fun",
+      "durationMinutes": 15
+    },
+    {
+      "id": "12",
+      "title": "Try a new recipe",
+      "description": "Cook something you've never made before. Bonus: share it with someone.",
+      "category": "fun",
+      "durationMinutes": 45
+    },
+    {
+      "id": "13",
+      "title": "Visit a thrift store",
+      "description": "Browse a thrift or vintage shop. Find one weird or wonderful item.",
+      "category": "fun",
+      "durationMinutes": 30
+    },
+    {
+      "id": "14",
+      "title": "Build a pillow fort",
+      "description": "Construct the coziest fort you can. Relax inside for 20 minutes.",
+      "category": "fun",
+      "durationMinutes": 25
+    },
+    {
+      "id": "15",
+      "title": "Listen to a podcast episode",
+      "description": "Pick an episode on a topic you're curious about. Take a walk while listening.",
+      "category": "fun",
+      "durationMinutes": 45
+    },
+    {
+      "id": "16",
+      "title": "Complete a puzzle",
+      "description": "Do a jigsaw, crossword, or Sudoku. Give your brain a fun challenge.",
+      "category": "fun",
+      "durationMinutes": 30
+    },
+    {
+      "id": "17",
+      "title": "Call a friend or family member",
+      "description": "Reach out to someone you haven't talked to in a while. Catch up for 15+ minutes.",
+      "category": "social",
+      "durationMinutes": 15
+    },
+    {
+      "id": "18",
+      "title": "Write a letter to someone",
+      "description": "Handwrite a note or letter. Mail it or leave it for someone to find.",
+      "category": "social",
+      "durationMinutes": 20
+    },
+    {
+      "id": "19",
+      "title": "Compliment 3 strangers",
+      "description": "Give a genuine compliment to three people you don't know today.",
+      "category": "social",
+      "durationMinutes": 20
+    },
+    {
+      "id": "20",
+      "title": "Have coffee with someone",
+      "description": "Meet a friend, coworker, or acquaintance for coffee or tea. 30 minutes of connection.",
+      "category": "social",
+      "durationMinutes": 30
+    },
+    {
+      "id": "21",
+      "title": "Join a local meetup or event",
+      "description": "Find an event (game night, trivia, hike) and show up. Meet new people.",
+      "category": "social",
+      "durationMinutes": 90
+    },
+    {
+      "id": "22",
+      "title": "Video call a long-distance friend",
+      "description": "Schedule a video call with someone far away. Catch up for at least 30 minutes.",
+      "category": "social",
+      "durationMinutes": 30
+    },
+    {
+      "id": "23",
+      "title": "Volunteer for an hour",
+      "description": "Find a local opportunity—food bank, shelter, community garden. Give back.",
+      "category": "social",
+      "durationMinutes": 60
+    },
+    {
+      "id": "24",
+      "title": "Strike up a conversation",
+      "description": "Talk to someone new—at a café, park, or store. Just say hi and see where it goes.",
+      "category": "social",
+      "durationMinutes": 15
+    }
+  ]
+}

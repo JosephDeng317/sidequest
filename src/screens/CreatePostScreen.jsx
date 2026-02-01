@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,12 +10,22 @@ import {
   ActivityIndicator,
   ScrollView,
 } from 'react-native';
+import { useRoute } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { createPost } from '../services/posts';
 
 export default function CreatePostScreen({ navigation }) {
+  const route = useRoute();
+  const questTitle = route.params?.questTitle ?? '';
+  const questDescription = route.params?.questDescription ?? '';
+
   const [title, setTitle] = useState('');
   const [caption, setCaption] = useState('');
+
+  useEffect(() => {
+    if (questTitle) setTitle(questTitle);
+    if (questDescription) setCaption(questDescription);
+  }, [questTitle, questDescription]);
   const [imageUri, setImageUri] = useState(null);
   const [loading, setLoading] = useState(false);
 
