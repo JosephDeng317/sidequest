@@ -56,11 +56,23 @@ export default function SidequestOptionsScreen({ navigation }) {
     }
   };
 
+  const getDifficultyFromDuration = (mins) => {
+    if (mins <= 20) return 1;
+    if (mins <= 35) return 2;
+    if (mins <= 60) return 3;
+    if (mins <= 90) return 4;
+    return 5;
+  };
+
   const handleStartQuest = () => {
     if (assignedQuest) {
+      const questCategory = assignedQuest.category ?? category;
+      const questDifficulty = assignedQuest.difficulty ?? getDifficultyFromDuration(assignedQuest.durationMinutes ?? 30);
       navigation.navigate('DoSidequest', {
         questTitle: assignedQuest.title,
         questDescription: assignedQuest.description,
+        questCategory,
+        questDifficulty,
         durationMinutes: assignedQuest.durationMinutes ?? timeMinutes,
       });
     }

@@ -19,6 +19,11 @@ match /posts/{postId}/comments/{commentId} {
   allow read: if request.auth != null;
   allow create: if request.auth != null;
 }
+
+match /userStats/{userId} {
+  allow read: if request.auth != null;
+  allow create, update: if request.auth != null && request.auth.uid == userId;
+}
 ```
 
 **Index required:** When you first add a comment, Firebase Console may prompt you to create an index for `comments` with field `createdAt` (ascending). Accept the prompt to create it.
